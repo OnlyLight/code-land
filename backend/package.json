@@ -1,0 +1,20 @@
+{
+  "name": "node-api-postgres",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "description": "RESTful API with Node.js, Express and PostgreSQL",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}
