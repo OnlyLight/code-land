@@ -1,4 +1,3 @@
-# ALB SG
 resource "aws_security_group" "alb" {
   vpc_id = aws_vpc.this.id
 
@@ -17,7 +16,6 @@ resource "aws_security_group" "alb" {
   }
 }
 
-# ESC SG
 resource "aws_security_group" "ecs" {
   vpc_id = aws_vpc.this.id
 
@@ -36,7 +34,6 @@ resource "aws_security_group" "ecs" {
   }
 }
 
-# RDS SG
 resource "aws_security_group" "rds" {
   vpc_id = aws_vpc.this.id
 
@@ -45,5 +42,12 @@ resource "aws_security_group" "rds" {
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.ecs.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
