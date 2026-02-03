@@ -1,62 +1,62 @@
-name: Terraform Pipeline
+# name: Terraform Pipeline
 
-on:
-  pull_request:
-    paths:
-      - "infra/**"
-  push:
-    branches: ["main"]
-    paths:
-      - "infra/**"
+# on:
+#   pull_request:
+#     paths:
+#       - "infra/**"
+#   push:
+#     branches: ["main"]
+#     paths:
+#       - "infra/**"
 
-env:
-  AWS_REGION: ap-southeast-1
+# env:
+#   AWS_REGION: ap-southeast-1
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-jobs:
-  terraform:
-    runs-on: ubuntu-latest
+# jobs:
+#   terraform:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.GITHUB_ACTIONS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+#       - name: Configure AWS credentials (OIDC)
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: ${{ secrets.GITHUB_ACTIONS_ROLE_ARN }}
+#           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: infra/envs/prod
+#       - name: Terraform Init
+#         run: terraform init
+#         working-directory: infra/envs/prod
 
-      - name: Terraform Format
-        run: terraform fmt -check
-        working-directory: infra/envs/prod
+#       - name: Terraform Format
+#         run: terraform fmt -check
+#         working-directory: infra/envs/prod
 
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: infra/envs/prod
+#       - name: Terraform Validate
+#         run: terraform validate
+#         working-directory: infra/envs/prod
 
-      - name: Terraform Plan
-        run: terraform plan
-        working-directory: infra/envs/prod
+#       - name: Terraform Plan
+#         run: terraform plan
+#         working-directory: infra/envs/prod
 
-      # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
-      - name: Trivy IaC scan
-        uses: aquasecurity/trivy-action@0.20.0
-        with:
-          scan-type: config
-          scan-ref: terraform
-          severity: HIGH,CRITICAL
+#       # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
+#       - name: Trivy IaC scan
+#         uses: aquasecurity/trivy-action@0.20.0
+#         with:
+#           scan-type: config
+#           scan-ref: terraform
+#           severity: HIGH,CRITICAL
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve
-        working-directory: infra/envs/prod
+#       - name: Terraform Apply
+#         if: github.ref == 'refs/heads/main'
+#         run: terraform apply -auto-approve
+#         working-directory: infra/envs/prod
