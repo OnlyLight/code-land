@@ -1,0 +1,54 @@
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      working_directory:
+        required: true
+        type: string
+
+jobs:
+  # SQL injection, Hardcoded secrets, Unsafe eval
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/nodejs"
+
+  # Scan package-lock.json, node_modules, os files if it exists
+  dependency-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trivy FS scan (Node deps)
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          scan-type: fs
+          scan-ref: ${{ inputs.working_directory }}
+          severity: CRITICAL,HIGH
+          exit-code: 1
+
+  # Scan before push ECR
+  # Catch libssl, libc, openssl, Common Vulnerabilities and Exposures (CVE) in image node
+  # npm deps into image
+  container-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          docker build -t backend:ci ${{ inputs.working_directory }}
+
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: backend:ci
+          severity: CRITICAL,HIGH
+          exit-code: 1

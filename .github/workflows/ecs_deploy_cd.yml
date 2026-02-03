@@ -7,7 +7,6 @@ on:
       - "sources/backend/**"
 
 permissions:
-  id-token: write
   contents: read
 
 env:
