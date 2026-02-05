@@ -1,9 +1,12 @@
 module "network" {
   source = "../../modules/network"
   vpc_cidr = "10.0.0.0/16"
-  azs = ["ap-southeast-1a", "ap-southeast-1b"]
-  public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets = ["10.0.11.0/24", "10.0.12.0/24"]
+  azs = ["ap-southeast-1a"]
+  public_subnets  = ["10.0.1.0/24"]
+  private_subnets = ["10.0.11.0/24"]
+  # azs = ["ap-southeast-1a", "ap-southeast-1b"]
+  # public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
+  # private_subnets = ["10.0.11.0/24", "10.0.12.0/24"]
 }
 
 module "ecr_backend" {
@@ -17,22 +20,37 @@ module "db_secret" {
   secret_string = var.db_password
 }
 
-module "alb" {
-  source          = "../../modules/alb"
-  name            = "codeland-alb"
-  vpc_id          = module.network.vpc_id
-  public_subnets  = module.network.public_subnets
-  security_groups = []
+module "security_groups" {
+  source = "../../modules/security-group"
+  vpc_id = module.network.vpc_id
 }
 
-module "ecs" {
-  source            = "../../modules/ecs"
-  cluster_name      = "codeland"
-  image             = module.ecr_backend.repository_url
-  subnets           = module.network.private_subnets
-  security_groups   = []
-  target_group_arn = module.alb.target_group_arn
-  db_host           = "rds-endpoint"
-  db_name           = "codeland"
-  db_secret_arn     = module.db_secret.secret_arn
-}
+# module "alb" {
+#   source          = "../../modules/alb"
+#   name            = "codeland-alb"
+#   vpc_id          = module.network.vpc_id
+#   public_subnets  = module.network.public_subnets
+#   security_groups = [module.security_groups.alb_sg_id]
+# }
+
+# module "ecs" {
+#   source            = "../../modules/ecs"
+#   cluster_name      = "codeland"
+#   image             = module.ecr_backend.repository_url
+#   subnets           = module.network.private_subnets
+#   security_groups   = [module.security_groups.ecs_sg_id]
+#   target_group_arn = module.alb.target_group_arn
+#   db_host           = "rds-endpoint"
+#   db_name           = "codeland"
+#   db_secret_arn     = module.db_secret.secret_arn
+# }
+
+# module "rds" {
+#   source = "../../modules/rds"
+#   db_name = "codeland"
+#   username = "postgres"
+#   password = var.db_password
+#   subnet_ids = ["10.0.11.0/24"] # private_subnet
+#   vpc_security_group_ids = [module.security_groups.rds_sg_id]
+#   multi_az = false
+# }

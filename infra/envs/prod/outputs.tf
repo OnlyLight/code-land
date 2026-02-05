@@ -7,3 +7,24 @@ output "role_arn" {
 output "role_name" {
   value = aws_iam_role.github_actions.name
 }
+
+output "vpc_id" {
+  value = module.network.vpc_id
+}
+
+output "public_subnets" {
+  value = module.network.public_subnets
+}
+
+output "private_subnets" {
+  value = module.network.private_subnets
+}
+
+output "repository_url" {
+  value = module.ecr_backend.repository_url
+}
+
+output "repository_arn" {
+  value = module.ecr_backend.repository_arn
+}
+
