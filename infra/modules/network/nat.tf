@@ -1,11 +1,12 @@
 resource "aws_eip" "nat" {
+  count  = length(var.private_subnets)
   domain = "vpc"
 }
 
 resource "aws_nat_gateway" "nat" {
   count         = length(var.private_subnets)
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.public[count.index].id
 
   tags = var.tags
 }
