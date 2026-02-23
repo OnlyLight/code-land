@@ -8,6 +8,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  healthCheck,
 } from "./utils.js"; // router functions
 
 // Express
@@ -24,6 +25,10 @@ app.use(cors());
 
 // Routes
 app.get("/", displayHome);
+
+// Health check route for ECS / ALB
+app.get("/health", healthCheck);
+
 app.get("/users", getUsers);
 app.get("/users/:id", getUserById);
 app.post("/users", createUser);

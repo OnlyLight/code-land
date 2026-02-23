@@ -45,7 +45,7 @@
 #         working-directory: infra/envs/prod
 
 #       - name: Terraform Plan
-#         run: terraform plan
+#         run: terraform plan -out=plan.tfplan
 #         working-directory: infra/envs/prod
 
 #       # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
@@ -58,5 +58,5 @@
 
 #       - name: Terraform Apply
 #         if: github.ref == 'refs/heads/main'
-#         run: terraform apply -auto-approve
+#         run: terraform apply plan.tfplan
 #         working-directory: infra/envs/prod

@@ -1,15 +1,15 @@
-name: ECS Scan Backend
+# name: ECS Scan Backend
 
-on:
-  pull_request:
-    paths:
-      - "sources/backend/**"
-  push:
-    paths:
-      - "sources/backend/**"
+# on:
+#   pull_request:
+#     paths:
+#       - "sources/backend/**"
+#   push:
+#     paths:
+#       - "sources/backend/**"
 
-jobs:
-  scan:
-    uses: ./.github/workflows/sub_scan.yml
-    with:
-      working_directory: ./sources/backend
+# jobs:
+#   scan:
+#     uses: ./.github/workflows/sub_scan.yml
+#     with:
+#       working_directory: ./sources/backend

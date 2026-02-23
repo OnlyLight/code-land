@@ -1,7 +1,3 @@
-locals {
-  db_secrets = jsondecode(var.db_secrets)
-}
-
 resource "aws_db_instance" "postgres" {
   engine         = "postgres"
   engine_version = "15"
@@ -10,11 +6,13 @@ resource "aws_db_instance" "postgres" {
   allocated_storage = 20
   db_name           = var.db_name
   username          = var.username
-  password          = local.db_secrets.password
+  password          = var.db_secrets
 
   multi_az               = var.multi_az
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = var.vpc_security_group_ids
 
   skip_final_snapshot = true
+
+  tags = var.tags
 }

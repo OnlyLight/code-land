@@ -1,7 +1,3 @@
-locals {
-  db_secrets = jsondecode(var.db_secrets)
-}
-
 resource "aws_ecs_cluster" "this" {
   name = "${var.container_name}-cluster"
 
@@ -9,6 +5,8 @@ resource "aws_ecs_cluster" "this" {
     name  = "containerInsights"
     value = var.enable_container_insights ? "enabled" : "disabled"
   }
+
+  tags = var.tags
 }
 
 resource "aws_ecs_task_definition" "backend" {
@@ -29,6 +27,14 @@ resource "aws_ecs_task_definition" "backend" {
         containerPort = 3000
       }]
 
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 60
+      }
+
       environment = [
         { name = "DB_HOST", value = var.db_host },
         { name = "DB_NAME", value = var.db_name }
@@ -37,9 +43,11 @@ resource "aws_ecs_task_definition" "backend" {
       secrets = [
         {
           name      = "DB_PASSWORD"
-          valueFrom = local.db_secrets.password
+          valueFrom = var.secret_arn
         }
       ]
     }
   ])
+
+  tags = var.tags
 }

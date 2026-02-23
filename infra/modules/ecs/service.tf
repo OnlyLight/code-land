@@ -16,4 +16,6 @@ resource "aws_ecs_service" "backend" {
     container_name   = var.container_name
     container_port   = 3000
   }
+
+  tags = var.tags
 }

@@ -9,7 +9,6 @@ variable "project_name" {
 variable "container_image" {
   description = "Docker image to deploy"
   type        = string
-  default     = "codeland-project:ba75ec4"
 }
 
 variable "db_name" {

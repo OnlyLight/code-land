@@ -6,6 +6,7 @@ export function displayHome(req, res) {
   res.status(200).json({
     info: "Node.js, Express, and Postgres API",
     GET: "/ | displayHome()",
+    GET: "/health | healthCheck()",
     GET: "/users | getUsers()",
     GET: "/users/:id | getUserById()",
     POST: "/users | createUser()",
@@ -13,6 +14,11 @@ export function displayHome(req, res) {
     DELETE: "/users/:id | deleteUser() });",
   });
 }
+
+export function healthCheck(req, res) {
+  res.status(200).json({ status: "ok" });
+}
+
 export function getUsers(req, res) {
   pool.query("SELECT * FROM users ORDER BY id ASC", (error, results) => {
     if (error) {

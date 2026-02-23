@@ -19,3 +19,8 @@ variable "multi_az" {
   type    = bool
   default = true
 }
+
+variable "tags" {
+  type    = map(string)
+  default = {}
+}

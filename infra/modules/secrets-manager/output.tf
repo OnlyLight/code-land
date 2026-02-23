@@ -3,5 +3,6 @@ output "secret_arn" {
 }
 
 output "db_secret_string" {
-  value = data.aws_secretsmanager_secret_version.db.secret_string
+  value     = aws_secretsmanager_secret_version.db.secret_string
+  sensitive = true
 }

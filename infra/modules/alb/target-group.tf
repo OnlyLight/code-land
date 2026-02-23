@@ -11,4 +11,6 @@ resource "aws_lb_target_group" "backend" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
+
+  tags = var.tags
 }

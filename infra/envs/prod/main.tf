@@ -7,12 +7,18 @@ module "network" {
   azs             = ["ap-southeast-1a", "ap-southeast-1b"]
   public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
   private_subnets = ["10.0.11.0/24", "10.0.12.0/24"]
+
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
 }
 
-module "ecr_backend" {
-  source          = "../../modules/ecr"
-  repository_name = var.project_name
-}
+# module "ecr_backend" {
+#   source          = "../../modules/ecr"
+#   repository_name = var.project_name
+# }
 
 resource "random_string" "bucket_suffix" {
   length  = 5
@@ -24,6 +30,11 @@ module "db_secret" {
   source        = "../../modules/secrets-manager"
   name          = "db-password-${random_string.bucket_suffix.result}"
   secret_string = var.db_password
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
 }
 
 module "alb_sg" {
@@ -45,6 +56,12 @@ module "alb_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }]
+
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
 }
 
 module "ecs_sg" {
@@ -66,6 +83,12 @@ module "ecs_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }]
+
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
 }
 
 module "rds_sg" {
@@ -87,6 +110,12 @@ module "rds_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }]
+
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
 }
 
 module "alb" {
@@ -95,6 +124,12 @@ module "alb" {
   vpc_id          = module.network.vpc_id
   public_subnets  = module.network.public_subnets
   security_groups = [module.alb_sg.security_group_id]
+
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
 }
 
 module "rds" {
@@ -105,17 +140,58 @@ module "rds" {
   subnet_ids             = module.network.private_subnets # private_subnet
   vpc_security_group_ids = [module.rds_sg.security_group_id]
   multi_az               = false
+
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
 }
 
 module "ecs" {
-  source           = "../../modules/ecs"
-  family           = var.project_name
-  container_name   = var.project_name
-  image            = "${module.ecr_backend.repository_url}/${var.container_image}"
+  source         = "../../modules/ecs"
+  family         = var.project_name
+  container_name = var.project_name
+  image          = var.container_image
+  # image            = "${module.ecr_backend.repository_url}/${var.container_image}"
   subnets          = module.network.private_subnets
   security_groups  = [module.ecs_sg.security_group_id]
   target_group_arn = module.alb.target_group_arn
   db_host          = module.rds.db_endpoint
   db_name          = var.db_name
-  db_secrets       = module.db_secret.db_secret_string
+  secret_arn       = module.db_secret.secret_arn
+
+  tags = {
+    project     = var.project_name
+    environment = "prod"
+    group       = "application"
+  }
+}
+
+resource "aws_resourcegroups_group" "resourcegroups_group" {
+  name = "${var.project_name}-s3-backend"
+
+  resource_query {
+    query = <<-JSON
+      {
+        "ResourceTypeFilters": [
+          "AWS::AllSupported"
+        ],
+        "TagFilters": [
+          {
+            "Key": "project",
+            "Values": ["${var.project_name}"]
+          },
+          {
+            "Key": "environment",
+            "Values": ["prod"]
+          },
+          {
+            "Key": "group",
+            "Values": ["application"]
+          }
+        ]
+      }
+    JSON
+  }
 }
