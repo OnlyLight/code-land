@@ -7,7 +7,7 @@ locals {
 }
 
 module "dynamodb" {
-  source  = "../modules/dynamodb"
+  source  = "../../modules/dynamodb"
   project = var.project_name
   tags    = local.tags
 }

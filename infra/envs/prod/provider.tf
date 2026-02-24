@@ -13,10 +13,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "codeland-terraform-state"
-    key            = "environments/prod/terraform.tfstate"
-    region         = var.aws_region
-    dynamodb_table = "terraform-locks"
+    bucket         = "codeland-s3-backend"
+    key            = "envs/prod/terraform.tfstate"
+    region         = "ap-southeast-1"
+    dynamodb_table = "codeland-s3-backend"
     encrypt        = true
   }
 }

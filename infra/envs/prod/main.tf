@@ -169,7 +169,7 @@ module "ecs" {
 }
 
 resource "aws_resourcegroups_group" "resourcegroups_group" {
-  name = "${var.project_name}-s3-backend"
+  name = "${var.project_name}-application"
 
   resource_query {
     query = <<-JSON

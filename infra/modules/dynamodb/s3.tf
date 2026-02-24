@@ -1,14 +1,14 @@
 resource "aws_s3_bucket" "s3_bucket" {
   bucket        = "${var.project}-s3-backend"
-  force_destroy = false
+  force_destroy = true
 
   tags = var.tags
 }
 
-resource "aws_s3_bucket_acl" "s3_bucket" {
-  bucket = aws_s3_bucket.s3_bucket.id
-  acl    = "private"
-}
+# resource "aws_s3_bucket_acl" "s3_bucket" {
+#   bucket = aws_s3_bucket.s3_bucket.id
+#   acl    = "private"
+# }
 
 resource "aws_s3_bucket_versioning" "s3_bucket" {
   bucket = aws_s3_bucket.s3_bucket.id
