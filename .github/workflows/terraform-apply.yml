@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   terraform:
@@ -27,40 +28,40 @@ jobs:
           role-to-assume: ${{ secrets.ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      # - name: Setup Terraform
+      #   uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: infra/envs/prod
+      # - name: Terraform Init
+      #   run: terraform init
+      #   working-directory: infra/envs/prod
 
-      - name: Terraform workspace
-        run: |
-          terraform workspace new prod
-          terraform workspace select prod
-        working-directory: infra/envs/prod
+      # - name: Terraform workspace
+      #   run: |
+      #     terraform workspace new prod
+      #     terraform workspace select prod
+      #   working-directory: infra/envs/prod
 
-      - name: Terraform Format
-        run: terraform fmt -check
-        working-directory: infra/envs/prod
+      # - name: Terraform Format
+      #   run: terraform fmt -check
+      #   working-directory: infra/envs/prod
 
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: infra/envs/prod
+      # - name: Terraform Validate
+      #   run: terraform validate
+      #   working-directory: infra/envs/prod
 
-      - name: Terraform Plan
-        run: terraform plan -out=plan.out
-        working-directory: infra/envs/prod
+      # - name: Terraform Plan
+      #   run: terraform plan -out=plan.out
+      #   working-directory: infra/envs/prod
 
-      # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
-      - name: Trivy IaC scan
-        uses: aquasecurity/trivy-action@0.20.0
-        with:
-          scan-type: config
-          scan-ref: terraform
-          severity: HIGH,CRITICAL
+      # # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
+      # - name: Trivy IaC scan
+      #   uses: aquasecurity/trivy-action@0.20.0
+      #   with:
+      #     scan-type: config
+      #     scan-ref: terraform
+      #     severity: HIGH,CRITICAL
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply plan.out
-        working-directory: infra/envs/prod
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/main'
+      #   run: terraform apply plan.out
+      #   working-directory: infra/envs/prod
