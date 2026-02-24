@@ -1,3 +1,7 @@
+locals {
+  environment = terraform.workspace
+  group       = "application"
+}
 module "network" {
   source   = "../../modules/network"
   vpc_cidr = "10.0.0.0/16"
@@ -10,15 +14,10 @@ module "network" {
 
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
-
-# module "ecr_backend" {
-#   source          = "../../modules/ecr"
-#   repository_name = var.project_name
-# }
 
 resource "random_string" "bucket_suffix" {
   length  = 5
@@ -32,8 +31,8 @@ module "db_secret" {
   secret_string = var.db_password
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
 
@@ -59,8 +58,8 @@ module "alb_sg" {
 
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
 
@@ -86,8 +85,8 @@ module "ecs_sg" {
 
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
 
@@ -113,8 +112,8 @@ module "rds_sg" {
 
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
 
@@ -127,8 +126,8 @@ module "alb" {
 
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
 
@@ -143,8 +142,8 @@ module "rds" {
 
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
 
@@ -153,7 +152,7 @@ module "ecs" {
   family         = var.project_name
   container_name = var.project_name
   image          = var.container_image
-  # image            = "${module.ecr_backend.repository_url}/${var.container_image}"
+  # image            = "${module.ecr_backend.repository_url}:latest"
   subnets          = module.network.private_subnets
   security_groups  = [module.ecs_sg.security_group_id]
   target_group_arn = module.alb.target_group_arn
@@ -163,8 +162,8 @@ module "ecs" {
 
   tags = {
     project     = var.project_name
-    environment = "prod"
-    group       = "application"
+    environment = local.environment
+    group       = local.group
   }
 }
 
