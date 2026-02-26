@@ -37,7 +37,7 @@ jobs:
 
       - name: Terraform workspace
         run: |
-          if terraform workspace list | grep -q " ${ { vars.WORKSPACE }}$"; then
+          if terraform workspace list | grep -q " ${{ vars.WORKSPACE }}$"; then
             echo "Workspace ${{ vars.WORKSPACE }} already exists"
           else
             echo "Creating workspace ${{ vars.WORKSPACE }}"
