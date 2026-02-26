@@ -33,7 +33,7 @@ jobs:
 
       - name: Terraform workspace
         run: |
-          if terraform workspace list | grep -q " ${ { vars.WORKSPACE }}$"; then
+          if terraform workspace list | grep -q " prod"; then
             echo "Workspace prod already exists"
           else
             echo "Creating workspace prod"
