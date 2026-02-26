@@ -37,7 +37,13 @@ jobs:
 
       - name: Terraform workspace
         run: |
-          terraform workspace new ${{ vars.WORKSPACE }}
+          if terraform workspace list | grep -q " ${ { vars.WORKSPACE }}$"; then
+            echo "Workspace ${{ vars.WORKSPACE }} already exists"
+          else
+            echo "Creating workspace ${{ vars.WORKSPACE }}"
+            terraform workspace new ${{ vars.WORKSPACE }}
+          fi
+
           terraform workspace select ${{ vars.WORKSPACE }}
         working-directory: infra/envs/${{ vars.WORKSPACE }}
 
