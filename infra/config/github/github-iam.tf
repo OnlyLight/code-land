@@ -79,6 +79,45 @@ resource "aws_iam_policy" "github_ecs" {
   })
 }
 
+resource "aws_iam_policy" "github_terraform_backend" {
+  name = "${var.project_name}-github-terraform-backend"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
+        ]
+        Resource = [
+          "arn:aws:s3:::codeland-s3-backend",
+          "arn:aws:s3:::codeland-s3-backend/envs/prod/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:DescribeTable",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem"
+        ]
+        Resource = "arn:aws:dynamodb:ap-southeast-1:${data.aws_caller_identity.current.account_id}:table/codeland-s3-backend"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "github_terraform_backend" {
+  role       = aws_iam_role.github_actions.name
+  policy_arn = aws_iam_policy.github_terraform_backend.arn
+}
+
 resource "aws_iam_role_policy_attachment" "github_ecr" {
   role       = aws_iam_role.github_actions.name
   policy_arn = aws_iam_policy.github_ecr.arn
