@@ -55,4 +55,7 @@ jobs:
       - name: Terraform Destroy
         run: |
           terraform destroy -auto-approve
+        env:
+          TF_VAR_container_image: ${{ vars.CONTAINER_IMAGE_BASE }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         working-directory: infra/envs/${{ inputs.environment }}
