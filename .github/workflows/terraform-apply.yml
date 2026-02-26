@@ -33,25 +33,28 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: infra/envs/prod
+        working-directory: infra/envs/${{ vars.WORKSPACE }}
 
       - name: Terraform workspace
         run: |
-          terraform workspace new prod
-          terraform workspace select prod
-        working-directory: infra/envs/prod
+          terraform workspace new ${{ vars.WORKSPACE }}
+          terraform workspace select ${{ vars.WORKSPACE }}
+        working-directory: infra/envs/${{ vars.WORKSPACE }}
 
       - name: Terraform Format
         run: terraform fmt -check
-        working-directory: infra/envs/prod
+        working-directory: infra/envs/${{ vars.WORKSPACE }}
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: infra/envs/prod
+        working-directory: infra/envs/${{ vars.WORKSPACE }}
 
       - name: Terraform Plan
         run: terraform plan -out=plan.out
-        working-directory: infra/envs/prod
+        env:
+          TF_VAR_container_image: ${{ vars.CONTAINER_IMAGE_BASE }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+        working-directory: infra/envs/${{ vars.WORKSPACE }}
 
       # # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
       # - name: Trivy IaC scan
@@ -64,4 +67,4 @@ jobs:
       # - name: Terraform Apply
       #   if: github.ref == 'refs/heads/main'
       #   run: terraform apply plan.out
-      #   working-directory: infra/envs/prod
+      #   working-directory: infra/envs/${{ vars.WORKSPACE }}
