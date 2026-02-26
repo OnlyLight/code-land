@@ -46,7 +46,6 @@ jobs:
 
       - name: Terraform workspace
         run: |
-          terraform workspace new ${{ inputs.environment }}
           terraform workspace select ${{ inputs.environment }}
         working-directory: infra/envs/${{ inputs.environment }}
 
