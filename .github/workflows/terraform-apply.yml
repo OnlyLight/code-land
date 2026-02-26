@@ -33,25 +33,25 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+        working-directory: infra/envs/prod
 
       - name: Terraform workspace
         run: |
-          terraform workspace new ${{ vars.WORKSPACE }}
-          terraform workspace select ${{ vars.WORKSPACE }}
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+          terraform workspace new prod
+          terraform workspace select prod
+        working-directory: infra/envs/prod
 
       - name: Terraform Format
         run: terraform fmt -check
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+        working-directory: infra/envs/prod
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+        working-directory: infra/envs/prod
 
       - name: Terraform Plan
         run: terraform plan -out=plan.out
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+        working-directory: infra/envs/prod
 
       # # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
       # - name: Trivy IaC scan

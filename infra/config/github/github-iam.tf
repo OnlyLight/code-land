@@ -95,8 +95,7 @@ resource "aws_iam_policy" "github_terraform_backend" {
           "s3:GetBucketLocation"
         ]
         Resource = [
-          "arn:aws:s3:::codeland-s3-backend",
-          "arn:aws:s3:::codeland-s3-backend/envs/prod/*"
+          "arn:aws:s3:::codeland-s3-backend/*"
         ]
       },
       {
