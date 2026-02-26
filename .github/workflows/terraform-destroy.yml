@@ -39,6 +39,9 @@ jobs:
           role-to-assume: ${{ secrets.ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
       - name: Terraform Init
         run: |
           terraform init
