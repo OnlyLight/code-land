@@ -1,6 +1,6 @@
 # Node.js Express PostgreSQL API
 
-A RESTful API (user database) built with Node.js, Express, and PostgreSQL to demonstrate a basic example setup.
+A RESTful API (user database) built with Node.js, Express, and PostgreSQL to demonstrate a basic example setup
 
 **Reference**: https://blog.logrocket.com/crud-rest-api-node-js-express-postgresql
 
