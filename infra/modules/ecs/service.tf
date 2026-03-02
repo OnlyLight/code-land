@@ -1,5 +1,5 @@
 resource "aws_ecs_service" "backend" {
-  name            = var.container_name
+  name            = "${var.container_name}-service"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.backend.arn
   desired_count   = var.desired_count
