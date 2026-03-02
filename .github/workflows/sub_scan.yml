@@ -19,6 +19,7 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: "p/nodejs"
+          working-directory: ${{ inputs.working_directory }}
 
   # Scan package-lock.json, node_modules, os files if it exists
   dependency-scan:
