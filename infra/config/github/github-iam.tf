@@ -1,5 +1,13 @@
 data "aws_caller_identity" "current" {}
 
+locals {
+  tags = {
+    Project     = var.project_name
+    Environment = terraform.workspace
+    Group       = "configuration"
+  }
+}
+
 resource "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 
@@ -10,6 +18,8 @@ resource "aws_iam_openid_connect_provider" "github" {
   thumbprint_list = [
     "6938fd4d98bab03faadb97b34396831e3780aea1"
   ]
+
+  tags = local.tags
 }
 
 resource "aws_iam_role" "github_actions" {
@@ -35,6 +45,8 @@ resource "aws_iam_role" "github_actions" {
       }
     ]
   })
+
+  tags = local.tags
 }
 
 resource "aws_iam_policy" "github_ecr" {
@@ -57,6 +69,8 @@ resource "aws_iam_policy" "github_ecr" {
       }
     ]
   })
+
+  tags = local.tags
 }
 
 resource "aws_iam_policy" "github_ecs" {
@@ -77,6 +91,8 @@ resource "aws_iam_policy" "github_ecs" {
       }
     ]
   })
+
+  tags = local.tags
 }
 
 resource "aws_iam_policy" "github_terraform_backend" {
@@ -120,6 +136,8 @@ resource "aws_iam_policy" "github_terraform_backend" {
       }
     ]
   })
+
+  tags = local.tags
 }
 
 resource "aws_iam_role_policy_attachment" "github_terraform_backend" {

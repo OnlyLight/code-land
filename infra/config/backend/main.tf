@@ -1,8 +1,8 @@
 locals {
   tags = {
-    project     = var.project_name
-    environment = "prod"
-    group       = "configuration"
+    Project     = var.project_name
+    Environment = terraform.workspace
+    Group       = "configuration"
   }
 }
 
