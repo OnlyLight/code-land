@@ -263,7 +263,9 @@ resource "aws_iam_policy" "github_terraform_apply" {
           "ec2:DescribeRouteTables",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeAvailabilityZones",
-          "ec2:ModifyVpcAttribute"
+          "ec2:ModifyVpcAttribute",
+          "ec2:ModifySubnetAttribute",
+          "ec2:DescribeNetworkInterfaces"
         ]
         Resource = "*"
       },
@@ -294,7 +296,8 @@ resource "aws_iam_policy" "github_terraform_apply" {
           "rds:DescribeDBInstances",
           "rds:DescribeDBSubnetGroups",
           "rds:AddTagsToResource",
-          "rds:RemoveTagsFromResource"
+          "rds:RemoveTagsFromResource",
+          "rds:ListTagsForResource"
         ]
         Resource = "*"
       },
@@ -314,7 +317,11 @@ resource "aws_iam_policy" "github_terraform_apply" {
           "elasticloadbalancing:RemoveTags",
           "elasticloadbalancing:DescribeLoadBalancers",
           "elasticloadbalancing:DescribeTargetGroups",
-          "elasticloadbalancing:DescribeListeners"
+          "elasticloadbalancing:DescribeListeners",
+          "elasticloadbalancing:DescribeTargetGroupAttributes",
+          "elasticloadbalancing:DescribeTags",
+          "elasticloadbalancing:DescribeLoadBalancerAttributes",
+          "elasticloadbalancing:DescribeListenerAttributes"
         ]
         Resource = "*"
       }

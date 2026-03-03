@@ -20,9 +20,9 @@ module "network" {
 }
 
 resource "random_string" "bucket_suffix" {
-  length  = 5
-  special = false
-  upper   = false
+  length  = 8
+  special = true
+  upper   = true
 }
 
 module "db_secret" {
