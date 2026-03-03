@@ -14,7 +14,7 @@ permissions:
 env:
   ECS_CLUSTER: codeland-cluster
   ECS_SERVICE: codeland-service
-  ECS_TASK_DEFINITION: codeland
+  ECS_TASK_DEFINITION: codeland.json
   CONTAINER_NAME: codeland
 
 jobs:
