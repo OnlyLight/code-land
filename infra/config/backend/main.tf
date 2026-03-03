@@ -6,11 +6,17 @@ locals {
   }
 }
 
-module "dynamodb" {
-  source  = "../../modules/dynamodb"
+module "s3" {
+  source  = "../../modules/s3"
   project = var.project_name
   tags    = local.tags
 }
+
+# module "dynamodb" {
+#   source  = "../../modules/dynamodb"
+#   project = var.project_name
+#   tags    = local.tags
+# }
 
 resource "aws_resourcegroups_group" "resourcegroups_group" {
   name = "${var.project_name}-s3-backend"
