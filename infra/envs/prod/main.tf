@@ -136,7 +136,7 @@ module "rds" {
   db_name                = var.db_name
   username               = var.db_username
   db_secrets             = module.db_secret.db_secret_string
-  subnet_ids             = module.network.private_subnets # private_subnet.
+  subnet_ids             = module.network.private_subnets # private_subnet
   vpc_security_group_ids = [module.rds_sg.security_group_id]
   multi_az               = false
 
