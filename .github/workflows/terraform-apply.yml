@@ -29,7 +29,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -migrate-state
         working-directory: infra/envs/prod
 
       - name: Terraform workspace
@@ -44,7 +44,7 @@ jobs:
         working-directory: infra/envs/prod
 
       - name: Terraform Plan
-        run: terraform plan -input=false -out=plan.out
+        run: terraform plan -out=plan.out
         env:
           TF_VAR_container_image: ${{ vars.CONTAINER_IMAGE_BASE }}
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
@@ -89,7 +89,7 @@ jobs:
           severity: HIGH,CRITICAL
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -migrate-state
         working-directory: infra/envs/prod
 
       - name: Select workspace
@@ -97,5 +97,5 @@ jobs:
         working-directory: infra/envs/prod
 
       - name: Terraform Apply
-        run: terraform apply -input=false plan.out
+        run: terraform apply plan.out
         working-directory: infra/envs/prod
