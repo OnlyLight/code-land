@@ -38,6 +38,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build & Push Image
+        id: build-image
         run: |
           IMAGE_TAG=${{ github.sha }}
 
