@@ -33,12 +33,12 @@ jobs:
           role-to-assume: ${{ secrets.ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }} # ap-southeast-1
 
-      - name: Login to Amazon ECR Public
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
-          mask-password: "true"
+      # - name: Login to Amazon ECR Public
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
+      #   with:
+      #     registry-type: public
+      #     mask-password: "true"
 
       - name: Build & Push Image
         run: |
