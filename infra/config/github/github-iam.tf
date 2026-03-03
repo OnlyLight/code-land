@@ -171,6 +171,7 @@ resource "aws_iam_policy" "github_terraform_apply" {
           "resource-groups:GetGroup",
           "resource-groups:GetGroupConfiguration",
           "resource-groups:GetGroupQuery",
+          "resource-groups:GetTags",
           "resource-groups:UpdateGroup",
           "resource-groups:UpdateGroupQuery",
           "resource-groups:ListGroups",
