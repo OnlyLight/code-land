@@ -20,5 +20,11 @@ variable "db_username" {
 }
 
 variable "db_password" {
+  type      = string
   sensitive = true
+
+  validation {
+    condition     = length(trimspace(var.db_password)) > 0
+    error_message = "db_password must be set (non-empty). In CI, pass it via TF_VAR_db_password (GitHub Secrets/Environments)."
+  }
 }
