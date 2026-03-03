@@ -261,7 +261,8 @@ resource "aws_iam_policy" "github_terraform_apply" {
           "ec2:DescribeNatGateways",
           "ec2:DescribeRouteTables",
           "ec2:DescribeSecurityGroups",
-          "ec2:DescribeAvailabilityZones"
+          "ec2:DescribeAvailabilityZones",
+          "ec2:ModifyVpcAttribute"
         ]
         Resource = "*"
       },
