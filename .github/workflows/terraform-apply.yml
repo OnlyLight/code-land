@@ -88,6 +88,6 @@ jobs:
           scan-ref: infra/envs/${{ vars.WORKSPACE }}
           severity: HIGH,CRITICAL
 
-      # - name: Terraform Apply (after manual approve)
-      #   run: terraform apply -input=false plan.out
-      #   working-directory: infra/envs/${{ vars.WORKSPACE }}
+      - name: Terraform Apply
+        run: terraform apply -input=false plan.out
+        working-directory: infra/envs/${{ vars.WORKSPACE }}
