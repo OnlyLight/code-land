@@ -33,13 +33,13 @@ jobs:
 
       - name: Terraform workspace
         run: |
-          if terraform workspace list | grep -q " ${{ vars.WORKSPACE }}"; then
+          if terraform workspace list | grep -q " prod"; then
             echo "Workspace prod already exists"
           else
-            echo "Creating workspace ${{ vars.WORKSPACE }}"
-            terraform workspace new ${{ vars.WORKSPACE }}
+            echo "Creating workspace prod"
+            terraform workspace new prod
           fi
-          terraform workspace select ${{ vars.WORKSPACE }}
+          terraform workspace select prod
         working-directory: infra/envs/prod
 
       - name: Terraform Plan
@@ -77,24 +77,24 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tfplan
-          path: infra/envs/${{ vars.WORKSPACE }}
+          path: infra/envs/prod
 
       # Scan Public S3, RDS public access, SG open 0.0.0.0/0, No encryption
       - name: Trivy IaC scan
         uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: config
-          scan-ref: infra/envs/${{ vars.WORKSPACE }}
+          scan-ref: infra/envs/prod
           severity: HIGH,CRITICAL
 
       - name: Terraform Init
         run: terraform init
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+        working-directory: infra/envs/prod
 
       - name: Select workspace
-        run: terraform workspace select ${{ vars.WORKSPACE }}
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+        run: terraform workspace select prod
+        working-directory: infra/envs/prod
 
       - name: Terraform Apply
         run: terraform apply -input=false plan.out
-        working-directory: infra/envs/${{ vars.WORKSPACE }}
+        working-directory: infra/envs/prod
