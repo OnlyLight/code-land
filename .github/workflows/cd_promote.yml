@@ -1,0 +1,66 @@
+name: CD Promote
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        type: string
+      target_env:
+        type: choice
+        options:
+          - staging
+          - prod
+      image_tag:
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  ECS_CLUSTER: codeland-cluster
+  ECS_SERVICE: codeland-service
+  ECS_TASK_DEFINITION: codeland-task-definition
+  CONTAINER_NAME: codeland
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target_env }}
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query taskDefinition > ${{ env.ECS_TASK_DEFINITION }}.json
+
+      - name: Login to Amazon ECR Public
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Verify image đúng là từ Staging đã pass
+        run: |
+          EXPECTED_SHA=$(git rev-parse HEAD)
+          docker inspect ${{ vars.ECR_REGISTRY }}:${{ inputs.image_tag }} \
+            --format '{{ index .Config.Labels "git-sha" }}'
+
+      - name: Fill in the new image name in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ env.ECS_TASK_DEFINITION }}.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ vars.ECR_REGISTRY }}:${{ inputs.image_tag }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true

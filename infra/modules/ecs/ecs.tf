@@ -9,6 +9,11 @@ resource "aws_ecs_cluster" "this" {
   tags = var.tags
 }
 
+resource "aws_cloudwatch_log_group" "ecs_backend" {
+  name              = "${var.container_name}-log-group"
+  retention_in_days = 14
+}
+
 resource "aws_ecs_task_definition" "backend" {
   family                   = var.family
   network_mode             = "awsvpc"
@@ -20,7 +25,7 @@ resource "aws_ecs_task_definition" "backend" {
 
   container_definitions = jsonencode([
     {
-      name  = var.container_name
+      name  = "${var.container_name}-task-definition"
       image = var.image
 
       portMappings = [{
@@ -46,6 +51,15 @@ resource "aws_ecs_task_definition" "backend" {
           valueFrom = var.secret_arn
         }
       ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.ecs_backend.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
 

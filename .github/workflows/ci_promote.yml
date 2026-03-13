@@ -1,0 +1,27 @@
+name: CI Promote
+
+on:
+  pull_request:
+    branches:
+      - "release/*"
+      - "main"
+    paths:
+      - "sources/backend/**"
+
+  workflow_dispatch:
+    inputs:
+      branch:
+        type: string
+      reason:
+        type: string
+      target_env:
+        type: choice
+        options:
+          - staging
+          - prod
+
+jobs:
+  scan:
+    uses: ./.github/workflows/sub_scan.yml
+    with:
+      working_directory: ./sources/backend

@@ -1,9 +1,10 @@
-name: ECS Deploy Backend
+name: CD
 
 on:
-  workflow_dispatch:
   push:
-    branches: ["main"]
+    branches:
+      - "feature/*"
+      - "develop"
     paths:
       - "sources/backend/**"
 
@@ -14,7 +15,7 @@ permissions:
 env:
   ECS_CLUSTER: codeland-cluster
   ECS_SERVICE: codeland-service
-  ECS_TASK_DEFINITION: codeland
+  ECS_TASK_DEFINITION: codeland-task-definition
   CONTAINER_NAME: codeland
 
 jobs:
@@ -70,7 +71,7 @@ jobs:
         run: |
           aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} --query taskDefinition > ${{ env.ECS_TASK_DEFINITION }}.json
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
+      - name: Fill in the new image name in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
@@ -85,15 +86,3 @@ jobs:
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
-
-      # - name: Update ECS service to new image
-      #   run: |
-      #     IMAGE="${{ needs.build.outputs.image }}"
-
-      #     aws ecs update-service \
-      #       --cluster "${{ env.ECS_CLUSTER }}" \
-      #       --service "${{ env.ECS_SERVICE }}" \
-      #       --force-new-deployment \
-      #       --region "${{ vars.AWS_REGION }}" \
-      #       --image "$IMAGE" \
-      #       --output json

@@ -148,17 +148,18 @@ module "rds" {
 }
 
 module "ecs" {
-  source         = "../../modules/ecs"
-  family         = var.project_name
-  container_name = var.project_name
-  image          = var.container_image
-  # image            = "${module.ecr_backend.repository_url}:latest"
-  subnets          = module.network.private_subnets
-  security_groups  = [module.ecs_sg.security_group_id]
-  target_group_arn = module.alb.target_group_arn
-  db_host          = module.rds.db_endpoint
-  db_name          = var.db_name
-  secret_arn       = module.db_secret.secret_arn
+  source                    = "../../modules/ecs"
+  aws_region                = var.aws_region
+  family                    = var.project_name
+  container_name            = var.project_name
+  image                     = var.container_image
+  subnets                   = module.network.private_subnets
+  security_groups           = [module.ecs_sg.security_group_id]
+  target_group_arn          = module.alb.target_group_arn
+  db_host                   = module.rds.db_endpoint
+  db_name                   = var.db_name
+  secret_arn                = module.db_secret.secret_arn
+  enable_container_insights = true
 
   tags = {
     project     = var.project_name

@@ -2,6 +2,7 @@ variable "image" {}
 variable "family" {}
 variable "container_name" {}
 variable "secret_arn" {}
+variable "aws_region" {}
 variable "subnets" {
   type = list(string)
 }
